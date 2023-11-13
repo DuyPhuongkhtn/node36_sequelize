@@ -25,7 +25,7 @@ app.use("/api", rootRoutes)
 
 app.listen(8080);
 
-console.log(process)
+// console.log(process)
 // http://localhost:8080
 // viết API
 // browser chỉ support cho method GET
@@ -75,3 +75,14 @@ import mysql from 'mysql2';
 // })
 
 //npx sequelize-auto -h localhost -d node36 -u root -x 1234 -p 3307 --dialect mysql -o src/models -l esm
+
+
+// các bước build BE
+// B1: npm i
+// B2: npm run start
+// docker -> hệ điều hành, ko có bất cứ app: node, docker
+// B1: cài Node
+// B2: copy file package.json và package-lock.json
+// B3: npm install
+// B4: copy toàn bộ source code BE -> images
+// B5: npm run start

@@ -1,6 +1,6 @@
 import initModels from '../models/init-models.js';
 import sequelize from '../models/connect.js';
-import { createToken, decodeToken } from '../config/jwt.js';
+import { createToken } from '../config/jwt.js';
 import bcrypt from 'bcrypt'
 
 const model = initModels(sequelize);
@@ -8,16 +8,16 @@ const model = initModels(sequelize);
 const login = async (req, res) => {
     let {email, pass_word} = req.body;
 
-    let checkEmail = await model.users.findOne({
+    let data = await model.users.findOne({
         where: {
             email: email
         }
     })
 
-    if (checkEmail){
-        let checkPassword = bcrypt.compareSync(pass_word, checkEmail.pass_word);
+    if (data){
+        let checkPassword = bcrypt.compareSync(pass_word, data.pass_word);
         if (checkPassword) {
-            let token = createToken({data: checkEmail});
+            let token = createToken(data);
             res.send(token);
             return
         } else {
@@ -66,82 +66,7 @@ const signUp = async (req, res) => {
     }
 }
 
-const loginFacebook = async (req, res) => {
-    console.log(req.body)
-    let {id, email, name} = req.body;
-
-    // kiểm tra email đã tồn tại trong db hay chưa
-    let checkEmail = await model.users.findOne({
-        where: {
-            email: email
-        }
-    });
-
-    if (!checkEmail) {
-        let newData = {
-            full_name: name,
-            email,
-            face_app_id: id,
-            avatar: "",
-            pass_word: "",
-            role: "user"
-        }
-
-        await model.users.create(newData)
-    }
-
-    let infoUser = await model.users.findOne({
-        where: {
-            face_app_id: id
-        }
-    });
-
-    let token = createToken({data: infoUser})
-    res.send(token)
-
-}
-
-// sẽ lấy user_id dựa vào token
-// không truyền user_id vào params
-const updateUser = async(req, res) => {
-    let {full_name, email, pass_word} = req.body;
-    let {token} = req.headers;
-
-    let decode = decodeToken(token)
-    let {user_id} = decode.data.data;
-    let infoUser = await model.users.findOne({
-        where: {
-            user_id: user_id
-        }
-    })
-
-    let hashPassword = bcrypt.hashSync(pass_word, 10)
-
-    if (infoUser) {
-        // speard operator
-        let updateData = {
-            ...infoUser,
-            full_name,
-            email,
-            pass_word: hashPassword
-        }
-
-        await model.users.update(updateData, {
-            where: {
-                user_id: user_id
-            }
-        })
-        
-    } else {
-        res.send("Không tồn tại user")
-        
-    }
-    res.send("update thành công");
-}
-
 export {
     login,
-    signUp,
-    loginFacebook,
-    updateUser
+    signUp
 }

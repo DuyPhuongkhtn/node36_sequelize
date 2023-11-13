@@ -1,0 +1,34 @@
+version: '3' # version docker-compose
+services:
+  mysql_db:
+    image: mysql # lấy image có tên mysql từ docker hub về
+    container_name: mysql_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+    ports:
+      - 3308:3306
+    networks:
+      - node36-networks
+
+  node36:
+    depends_on:
+      - mysql_db
+    build: . # tìm Dockerfile từ folder node36 để build image
+    container_name: node36_container
+    environment:
+      - DB_HOST=mysql_db
+      - DB_DIALECT=mysql
+      - DB_NAME=node36
+      - DB_PORT=3306
+      - DB_PASS=1234
+      - DB_ROOT=root
+    ports:
+      - "8080:8080"
+    networks:
+      - node36-networks
+
+volumes:
+  mysql_db:
+    driver: local
+networks:
+  node36-networks:

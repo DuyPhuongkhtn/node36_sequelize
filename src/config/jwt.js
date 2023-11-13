@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 const createToken = (data) => {
-    let token = jwt.sign({data}, "NODE36", {expiresIn: "5y"})
+    let token = jwt.sign({data}, "NODE36", {expiresIn: "5m"})
 
     return token;
 }
@@ -11,7 +11,7 @@ const checkToken = (token) => {
 }
 
 const decodeToken = (token) => {
-    return jwt.decode(token)
+    return jwt.decode(token, "NODE36")
 }
 
 const khoaApi = (req, res, next) =>{
