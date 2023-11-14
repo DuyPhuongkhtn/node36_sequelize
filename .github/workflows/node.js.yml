@@ -38,7 +38,5 @@ jobs:
             git checkout main &&
             git pull origin main &&
             sudo docker images -af reference='node36' -q &&
-            sudo docker build . -t node36 &&
-            sudo docker ps -q --filter "name=cons-node36" | grep -q . && sudo docker rm -f cons-node36 &&
-            sudo docker run -d -p 8080:8080 --name cons-node36 node36
+            sudo docker build . -t node36
           '
