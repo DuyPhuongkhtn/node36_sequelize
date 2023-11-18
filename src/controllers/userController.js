@@ -66,7 +66,14 @@ const signUp = async (req, res) => {
     }
 }
 
+const getAllUser = async (req, res) => {
+    let data = await model.users.findAll();
+
+    return res.send(data);
+}
+
 export {
     login,
-    signUp
+    signUp,
+    getAllUser
 }
